@@ -21,7 +21,7 @@
     "prepublishOnly": "npm test"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "keywords": ["claude", "claude-code", "token", "optimizer", "ai", "context"],
   "license": "MIT",

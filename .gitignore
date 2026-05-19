@@ -15,7 +15,6 @@ node_modules/
 .windsurfrules
 AGENTS.md
 GEMINI.md
-docs/superpowers/
 
 # Self-generated demo artifacts (from running cto init in this repo)
 CLAUDE.md

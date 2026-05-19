@@ -13,7 +13,7 @@ TIME=$(date +%H:%M)
 
 # Count tokens in auto-loadable files (word count × 1.3 as proxy)
 WORD_COUNT=$(find . -maxdepth 3 \
-  \( -name "*.md" -path "./.claude/*.md" -o -name "CLAUDE.md" \) \
+  \( -name "*.md" -path "./.claude/*.md" -o -path "./CLAUDE.md" \) \
   -not -path "./.claude/completions/*" \
   -not -path "./.claude/sessions/*" \
   2>/dev/null | xargs wc -w 2>/dev/null | tail -1 | awk '{print $1}')
