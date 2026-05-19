@@ -31,7 +31,7 @@ describe('buildReport', () => {
   it('after equals sum of afterFiles token counts', async () => {
     const report = await buildReport(tmpDir);
     assert.ok(Array.isArray(report.afterFiles), 'afterFiles should be an array');
-    assert.equal(report.afterFiles.length, 4, 'should have 4 essential files');
+    assert.equal(report.afterFiles.length, 5, 'should have 5 essential files');
     const sum = report.afterFiles.reduce((s, f) => s + f.tokens, 0);
     assert.equal(report.after, sum, 'after should equal sum of afterFiles tokens');
     assert.ok(report.after > 0, 'after should be non-zero (real tokenization)');

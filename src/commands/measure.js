@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import path from 'node:path';
 import { scanAutoLoadFiles } from '../lib/scanner.js';
 import { countTokens } from '../lib/tokenizer.js';
-import { buildClaudeMd, buildCommonMistakesMd, buildQuickStartMd, buildArchitectureMapMd } from './init.js';
+import { buildClaudeMd, buildCommonMistakesMd, buildQuickStartMd, buildArchitectureMapMd, buildDocsIndexMd } from './init.js';
 
 function computeOptimizedAfter() {
   const date = new Date().toISOString().split('T')[0];
@@ -11,6 +11,7 @@ function computeOptimizedAfter() {
     { label: '.claude/COMMON_MISTAKES.md', content: buildCommonMistakesMd(date) },
     { label: '.claude/QUICK_START.md', content: buildQuickStartMd(date) },
     { label: '.claude/ARCHITECTURE_MAP.md', content: buildArchitectureMapMd(date) },
+    { label: 'docs/INDEX.md', content: buildDocsIndexMd(date) },
   ].map(f => ({ label: f.label, tokens: countTokens(f.content) }));
 }
 

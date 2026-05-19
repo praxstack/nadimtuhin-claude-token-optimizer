@@ -137,6 +137,28 @@ project/
 `;
 }
 
+export function buildDocsIndexMd(date) {
+  return `# Documentation Index
+
+---
+
+## Session Start (Essential - ~800 tokens)
+
+- \`CLAUDE.md\` (~450 tokens)
+- \`.claude/COMMON_MISTAKES.md\` (~350 tokens)
+- \`.claude/QUICK_START.md\` (~100 tokens)
+- \`.claude/ARCHITECTURE_MAP.md\` (~150 tokens)
+
+## Task-Specific Topics (Load As Needed)
+
+Add topic files in \`docs/learnings/\` and list them here.
+
+---
+
+**Last Updated**: ${date}
+`;
+}
+
 export async function runInit(dir, options) {
   const date = new Date().toISOString().split('T')[0];
   const { projectType, techStack, mainFeatures, framework, force } = options;
@@ -166,25 +188,7 @@ export async function runInit(dir, options) {
   writeFile(path.join(dir, '.claude', 'QUICK_START.md'), buildQuickStartMd(date));
   writeFile(path.join(dir, '.claude', 'ARCHITECTURE_MAP.md'), buildArchitectureMapMd(date));
 
-  writeFile(path.join(dir, 'docs', 'INDEX.md'), `# Documentation Index
-
----
-
-## Session Start (Essential - ~800 tokens)
-
-- \`CLAUDE.md\` (~450 tokens)
-- \`.claude/COMMON_MISTAKES.md\` (~350 tokens)
-- \`.claude/QUICK_START.md\` (~100 tokens)
-- \`.claude/ARCHITECTURE_MAP.md\` (~150 tokens)
-
-## Task-Specific Topics (Load As Needed)
-
-Add topic files in \`docs/learnings/\` and list them here.
-
----
-
-**Last Updated**: ${date}
-`);
+  writeFile(path.join(dir, 'docs', 'INDEX.md'), buildDocsIndexMd(date));
 }
 
 export async function initCommand(options) {
