@@ -22,7 +22,7 @@ function buildClaudeMd(projectType, techStack, mainFeatures, date) {
 
 ## Project Overview
 
-${projectType} application for ${mainFeatures}
+${projectType} for ${mainFeatures}
 
 **Tech Stack**: ${techStack}
 
