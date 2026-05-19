@@ -1,0 +1,21 @@
+# Added by code-review-graph
+.code-review-graph/
+
+# Dependencies
+node_modules/
+
+# IDE and workspace tool configs (local only)
+.claude/
+.claudeignore
+.cursorrules
+.kiro/
+.mcp.json
+.omc/
+.opencode.json
+.windsurfrules
+AGENTS.md
+GEMINI.md
+
+# Self-generated demo artifacts (from running cto init in this repo)
+CLAUDE.md
+docs/INDEX.md

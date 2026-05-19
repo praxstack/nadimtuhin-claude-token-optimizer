@@ -29,7 +29,21 @@ Real result: 11,000 → 1,300 tokens. That's 9,700 tokens freed up for your code
 
 ## Quick Setup
 
-Run this in your project root:
+**Option 1: npm (recommended)**
+
+```bash
+npx claude-token-optimizer init
+```
+
+No install needed. Asks 3 questions, creates the optimized structure in ~30 seconds.
+
+**Measure first** — see your actual token waste before committing:
+
+```bash
+npx claude-token-optimizer measure
+```
+
+**Option 2: curl (shell fallback)**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/nadimtuhin/claude-token-optimizer/main/init.sh | bash
@@ -99,6 +113,18 @@ Got patterns for 9 frameworks with common mistakes and best practices:
 | Laravel | [examples/laravel.md](examples/laravel.md) |
 
 Each includes the top 5 critical mistakes for that framework (N+1 queries, auth issues, etc).
+
+### Framework-aware setup
+
+Pass `--framework` to skip prompts and get an optimized `.claudeignore` for your stack:
+
+```bash
+npx claude-token-optimizer init --framework nextjs
+npx claude-token-optimizer init --framework django
+npx claude-token-optimizer init --framework go
+```
+
+Supported: `express`, `nextjs`, `vue`, `nuxtjs`, `angular`, `django`, `rails`, `nestjs`, `laravel`, `fastapi`, `go`, `spring-boot`, `svelte`
 
 ### Manual Setup
 
