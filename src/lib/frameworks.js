@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 export const SUPPORTED_FRAMEWORKS = [
   'express', 'nextjs', 'vue', 'nuxtjs', 'angular',
   'django', 'rails', 'nestjs', 'laravel',
@@ -12,6 +15,17 @@ const BASE_IGNORE = `# Task completion documents
 
 # Archived documentation
 docs/archive/**
+
+# User-facing docs (not needed during dev sessions — devs have CLAUDE.md)
+CHANGELOG.md
+README.md
+CONTRIBUTING.md
+GEMINI.md
+AGENTS.md
+.cursorrules
+.windsurfrules
+.clinerules
+.roomodes
 
 # Git
 .git/**
@@ -34,14 +48,18 @@ const FRAMEWORK_EXTRA = {
 node_modules/**
 dist/**
 build/**
-coverage/**`,
+coverage/**
+*.min.js`,
 
   nextjs: `# Node / Next.js
 node_modules/**
 .next/**
 out/**
 dist/**
-coverage/**`,
+coverage/**
+__snapshots__/**
+*.snap
+public/fonts/**`,
 
   vue: `# Node / Vue
 node_modules/**
@@ -67,7 +85,8 @@ __pycache__/**
 .venv/**
 venv/**
 staticfiles/**
-media/**`,
+media/**
+**/migrations/*.py`,
 
   rails: `# Ruby / Rails
 vendor/**
@@ -85,7 +104,8 @@ coverage/**`,
 vendor/**
 node_modules/**
 storage/logs/**
-bootstrap/cache/**`,
+bootstrap/cache/**
+*.lock`,
 
   fastapi: `# Python / FastAPI
 __pycache__/**
@@ -99,7 +119,8 @@ htmlcov/**`,
 vendor/**
 bin/**
 *.test
-*.out`,
+*.out
+*.pb.go`,
 
   'spring-boot': `# Java / Spring Boot
 target/**
@@ -119,6 +140,55 @@ coverage/**`,
 export function getClaudeIgnore(framework) {
   const extra = FRAMEWORK_EXTRA[framework] ?? '';
   return extra ? `${BASE_IGNORE}\n${extra}\n` : `${BASE_IGNORE}\n`;
+}
+
+export function detectFramework(dir) {
+  const read = (f) => { try { return fs.readFileSync(path.join(dir, f), 'utf8'); } catch { return null; } };
+
+  const pkg = read('package.json');
+  if (pkg) {
+    try {
+      const { dependencies: d = {}, devDependencies: dd = {} } = JSON.parse(pkg);
+      const deps = { ...d, ...dd };
+      if (deps['next']) return 'nextjs';
+      if (deps['nuxt']) return 'nuxtjs';
+      if (deps['@angular/core']) return 'angular';
+      if (deps['@nestjs/core']) return 'nestjs';
+      if (deps['svelte']) return 'svelte';
+      if (deps['vue']) return 'vue';
+      if (deps['express']) return 'express';
+    } catch { /* ignore malformed package.json */ }
+  }
+
+  const req = read('requirements.txt');
+  if (req) {
+    if (/^django/im.test(req)) return 'django';
+    if (/^fastapi/im.test(req)) return 'fastapi';
+  }
+
+  const pyproject = read('pyproject.toml');
+  if (pyproject) {
+    if (/django/i.test(pyproject)) return 'django';
+    if (/fastapi/i.test(pyproject)) return 'fastapi';
+  }
+
+  if (read('go.mod')) return 'go';
+
+  const composer = read('composer.json');
+  if (composer) {
+    try {
+      const { require: r = {} } = JSON.parse(composer);
+      if (r['laravel/framework']) return 'laravel';
+    } catch { /* ignore */ }
+  }
+
+  const gemfile = read('Gemfile');
+  if (gemfile && /gem ['"]rails['"]/i.test(gemfile)) return 'rails';
+
+  const pom = read('pom.xml') || read('build.gradle');
+  if (pom && /spring-boot/i.test(pom)) return 'spring-boot';
+
+  return null;
 }
 
 export function isKnownFramework(name) {

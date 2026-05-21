@@ -19,3 +19,7 @@ GEMINI.md
 # Self-generated demo artifacts (from running cto init in this repo)
 CLAUDE.md
 docs/INDEX.md
+
+# WoterClip local state (not for repo)
+.woterclip/.heartbeat-lock
+.woterclip/tasks/

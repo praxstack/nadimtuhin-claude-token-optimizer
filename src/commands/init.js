@@ -2,7 +2,8 @@ import chalk from 'chalk';
 import fs from 'node:fs';
 import path from 'node:path';
 import readline from 'node:readline';
-import { getClaudeIgnore, isKnownFramework, SUPPORTED_FRAMEWORKS } from '../lib/frameworks.js';
+import { getClaudeIgnore, isKnownFramework, detectFramework, SUPPORTED_FRAMEWORKS } from '../lib/frameworks.js';
+import { hooksCommand } from './hooks.js';
 
 function prompt(rl, question) {
   return new Promise(resolve => rl.question(question, resolve));
@@ -180,7 +181,7 @@ export async function runInit(dir, options) {
     fs.mkdirSync(path.join(dir, d), { recursive: true });
   }
 
-  const fw = framework?.toLowerCase();
+  const fw = (framework ?? detectFramework(dir))?.toLowerCase();
   writeFile(path.join(dir, '.claudeignore'), getClaudeIgnore(fw));
 
   writeFile(path.join(dir, 'CLAUDE.md'), buildClaudeMd(projectType, techStack, mainFeatures, date));
@@ -200,12 +201,24 @@ export async function initCommand(options) {
   console.log(chalk.bold('╚════════════════════════════════════════════════╝'));
   console.log('');
 
-  let { framework, yes, force } = options;
+  let { framework, yes, force, hooks: installHooks } = options;
   let projectType, techStack, mainFeatures;
 
   if (framework && !isKnownFramework(framework)) {
     console.log(chalk.yellow(`⚠️  Unknown framework "${framework}". Supported: ${SUPPORTED_FRAMEWORKS.join(', ')}`));
     framework = undefined;
+  }
+
+  // Auto-detect framework when not explicitly provided
+  if (!framework) {
+    const detected = detectFramework(dir);
+    if (detected) {
+      console.log(chalk.dim(`🔍 Auto-detected: ${detected}  (from config file)`));
+      console.log('');
+    } else {
+      console.log(chalk.dim('ℹ️  No framework detected — using base .claudeignore'));
+      console.log('');
+    }
   }
 
   if (yes || framework) {
@@ -241,11 +254,44 @@ export async function initCommand(options) {
   console.log('   • Session start: ~800 tokens (vs ~8,000 before)');
   console.log('   • Savings: ~88% reduction ⚡');
   console.log('');
+
+  // Hooks setup step
+  if (installHooks) {
+    // --hooks flag: install non-interactively
+    console.log(chalk.blue('🪝 Installing Claude Code hooks...'));
+    await hooksCommand('install', null, { all: true });
+    console.log('');
+    console.log(chalk.dim('Add hooks to ~/.claude/settings.json:'));
+    await hooksCommand('settings');
+    console.log('');
+  } else if (!yes) {
+    // Interactive: ask once
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    const ans = await new Promise(resolve => rl.question(
+      chalk.blue('🪝 Set up Claude Code hooks for token monitoring? (y/N) '),
+      resolve
+    ));
+    rl.close();
+    console.log('');
+    if (ans.trim().toLowerCase() === 'y') {
+      console.log(chalk.blue('Installing hooks...'));
+      await hooksCommand('install', null, { all: true });
+      console.log('');
+      console.log(chalk.dim('Copy this into ~/.claude/settings.json:'));
+      await hooksCommand('settings');
+      console.log('');
+    } else {
+      console.log(chalk.dim('Skipped. Run: cto hooks install --all  to add later.'));
+      console.log('');
+    }
+  }
+
   console.log('📝 Next Steps:');
   console.log(`   1. Customize ${chalk.cyan('.claude/COMMON_MISTAKES.md')}`);
   console.log(`   2. Update ${chalk.cyan('.claude/QUICK_START.md')} with your commands`);
   console.log(`   3. Fill in ${chalk.cyan('.claude/ARCHITECTURE_MAP.md')}`);
+  console.log(`   4. Add to CI: ${chalk.cyan('npx claude-token-optimizer audit --json')}`);
   console.log('');
-  console.log(`   Run ${chalk.cyan('npx claude-token-optimizer measure')} to verify savings`);
+  console.log(`   Run ${chalk.cyan('cto measure')} to verify savings`);
   console.log('');
 }

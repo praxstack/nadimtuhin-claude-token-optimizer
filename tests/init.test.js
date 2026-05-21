@@ -3,7 +3,13 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import { execSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { runInit } from '../src/commands/init.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(__dirname, '..');
+const CTO = path.join(ROOT, 'bin', 'cto.js');
 
 let tmpDir;
 
@@ -91,5 +97,39 @@ describe('runInit', () => {
     const content = fs.readFileSync(path.join(tmpDir, 'CLAUDE.md'), 'utf8');
     assert.ok(!content.includes('existing content'));
     assert.ok(content.includes('Express API'));
+  });
+
+  it('shows auto-detected framework when package.json has known dep', () => {
+    fs.writeFileSync(path.join(tmpDir, 'package.json'),
+      JSON.stringify({ dependencies: { next: '14.0.0' } }));
+    const out = execSync(`node "${CTO}" init --yes`, { cwd: tmpDir, encoding: 'utf8' });
+    assert.ok(out.includes('Auto-detected') || out.includes('nextjs'),
+      `expected auto-detect message, got: ${out}`);
+  });
+
+  it('shows no-framework message when no config files present', () => {
+    const out = execSync(`node "${CTO}" init --yes`, { cwd: tmpDir, encoding: 'utf8' });
+    assert.ok(out.includes('No framework detected'),
+      `expected no-framework message, got: ${out}`);
+  });
+
+  it('suppresses auto-detect message when --framework is explicit', () => {
+    const out = execSync(`node "${CTO}" init --yes --framework express`, { cwd: tmpDir, encoding: 'utf8' });
+    assert.ok(!out.includes('Auto-detected'),
+      `expected no auto-detect message with explicit --framework, got: ${out}`);
+  });
+
+  it('shows CI audit hint in next steps', () => {
+    const out = execSync(`node "${CTO}" init --yes`, { cwd: tmpDir, encoding: 'utf8' });
+    assert.ok(out.includes('audit'), `expected CI audit hint in output, got: ${out}`);
+  });
+
+  it('--hooks flag installs all hook files', () => {
+    execSync(`node "${CTO}" init --yes --framework express --hooks`, { cwd: tmpDir, encoding: 'utf8' });
+    const templates = fs.readdirSync(path.join(ROOT, 'templates', 'hooks')).filter(f => f.endsWith('.sh'));
+    const hooksDir = path.join(tmpDir, '.claude', 'hooks');
+    for (const f of templates) {
+      assert.ok(fs.existsSync(path.join(hooksDir, f)), `${f} should be installed by --hooks`);
+    }
   });
 });

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { buildReport } from '../src/commands/measure.js';
+import { buildReport, runMeasure } from '../src/commands/measure.js';
 
 let tmpDir;
 
@@ -50,5 +50,33 @@ describe('buildReport', () => {
     assert.ok(report.files.length > 0);
     assert.ok('label' in report.files[0]);
     assert.ok('tokens' in report.files[0]);
+  });
+});
+
+describe('measureCommand CTA', () => {
+  it('shows cto init CTA for uninitialized project', async () => {
+    fs.writeFileSync(path.join(tmpDir, 'README.md'), '# Big doc\n' + 'word '.repeat(500));
+    const lines = [];
+    const orig = console.log;
+    console.log = (...args) => lines.push(args.join(' '));
+    await runMeasure(tmpDir);
+    console.log = orig;
+    const output = lines.join('\n');
+    assert.ok(output.includes('cto init'), 'should suggest cto init for uninitialized project');
+    assert.ok(output.includes('AFTER'), 'should show AFTER section for uninitialized project');
+  });
+
+  it('shows already-initialized message when CLAUDE.md exists', async () => {
+    fs.writeFileSync(path.join(tmpDir, 'CLAUDE.md'), '# Claude\n\nProject overview.');
+    fs.writeFileSync(path.join(tmpDir, 'README.md'), '# Big doc\n' + 'word '.repeat(500));
+    const lines = [];
+    const orig = console.log;
+    console.log = (...args) => lines.push(args.join(' '));
+    await runMeasure(tmpDir);
+    console.log = orig;
+    const output = lines.join('\n');
+    assert.ok(output.includes('Already initialized'), 'should show already-initialized for projects with CLAUDE.md');
+    assert.ok(!output.includes('cto init'), 'should not suggest cto init when already initialized');
+    assert.ok(!output.includes('AFTER'), 'should not show AFTER section when already initialized');
   });
 });

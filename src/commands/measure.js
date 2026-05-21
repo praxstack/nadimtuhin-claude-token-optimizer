@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import fs from 'node:fs';
 import path from 'node:path';
 import { scanAutoLoadFiles } from '../lib/scanner.js';
 import { countTokens } from '../lib/tokenizer.js';
@@ -31,14 +32,13 @@ export async function buildReport(dir) {
   return { before, after, savings, files: fileBreakdown, afterFiles };
 }
 
-export async function measureCommand() {
-  const dir = process.cwd();
-
+export async function runMeasure(dir) {
   console.log('');
   console.log(chalk.bold('📊 Token Audit — ' + path.basename(dir) + '/'));
   console.log('');
 
   const report = await buildReport(dir);
+  const isInitialized = fs.existsSync(path.join(dir, 'CLAUDE.md'));
 
   console.log(chalk.dim('  BEFORE (current state)'));
   console.log(chalk.dim('  ' + '─'.repeat(45)));
@@ -54,28 +54,31 @@ export async function measureCommand() {
   console.log(`  ${'Total auto-loaded:'.padEnd(35)} ${chalk.yellow(report.before.toLocaleString().padStart(8))} tokens`);
 
   console.log('');
-  console.log(chalk.dim('  AFTER (post-init estimate)'));
-  console.log(chalk.dim('  ' + '─'.repeat(45)));
-  for (const f of report.afterFiles) {
-    const label = f.label.padEnd(35);
-    const tokens = f.tokens.toLocaleString().padStart(8);
-    console.log(`  ${label} ${tokens} tokens`);
-  }
-  console.log(chalk.dim('  ' + '─'.repeat(45)));
-  console.log(`  ${'Total auto-loaded:'.padEnd(35)} ${chalk.green(report.after.toLocaleString().padStart(8))} tokens`);
 
-  console.log('');
-
-  if (report.savings > 0) {
+  if (report.before === 0) {
+    console.log(chalk.dim('  Nothing to measure — directory may already be optimized or is empty.'));
+  } else if (isInitialized) {
+    console.log(chalk.green(`  ✓ Already initialized. Run ${chalk.cyan('cto compress')} to reduce further.`));
+  } else {
+    console.log(chalk.dim('  AFTER (post-init estimate)'));
+    console.log(chalk.dim('  ' + '─'.repeat(45)));
+    for (const f of report.afterFiles) {
+      const label = f.label.padEnd(35);
+      const tokens = f.tokens.toLocaleString().padStart(8);
+      console.log(`  ${label} ${tokens} tokens`);
+    }
+    console.log(chalk.dim('  ' + '─'.repeat(45)));
+    console.log(`  ${'Total auto-loaded:'.padEnd(35)} ${chalk.green(report.after.toLocaleString().padStart(8))} tokens`);
+    console.log('');
     const pct = Math.round((report.savings / report.before) * 100);
     console.log(chalk.green(`  💡 Savings: ${report.savings.toLocaleString()} tokens (${pct}%)`));
     console.log('');
-    console.log(`  Run ${chalk.cyan('npx claude-token-optimizer init')} to apply`);
-  } else if (report.before === 0) {
-    console.log(chalk.dim('  Nothing to measure — directory may already be optimized or is empty.'));
-  } else {
-    console.log(chalk.green('  ✓ Already optimized! Token usage is within baseline.'));
+    console.log(`  Run ${chalk.cyan('cto init')} to apply`);
   }
 
   console.log('');
+}
+
+export async function measureCommand() {
+  return runMeasure(process.cwd());
 }
