@@ -30,23 +30,34 @@ Real result: 11,000 → 1,300 tokens. That's 9,700 tokens freed up for your code
 
 ## Quick Setup
 
+**Option A — no install (npx):**
+
 ```bash
 npx claude-token-optimizer init
 ```
 
-No install needed. Auto-detects your framework, creates the optimized structure in ~30 seconds.
+**Option B — one-line curl install (global `cto` alias):**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nadimtuhin/claude-token-optimizer/main/install.sh | bash
+cto init
+```
+
+**Option C — npm global:**
+
+```bash
+npm install -g claude-token-optimizer
+cto init
+```
+
+All three options auto-detect your framework and create the optimized structure in ~30 seconds.
 
 **Measure first** — see your actual token waste before committing:
 
 ```bash
 npx claude-token-optimizer measure
-```
-
-Or install globally for the short `cto` alias:
-
-```bash
-npm install -g claude-token-optimizer
-cto init
+# or
+cto measure
 ```
 
 ### What You Get
