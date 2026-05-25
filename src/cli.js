@@ -8,6 +8,7 @@ import { compressCommand } from './commands/compress.js';
 import { pruneCommand } from './commands/prune.js';
 import { watchCommand } from './commands/watch.js';
 import { diffCommand } from './commands/diff.js';
+import { updateCommand } from './commands/update.js';
 
 const { version } = createRequire(import.meta.url)('../package.json');
 
@@ -100,6 +101,11 @@ export function run() {
     .command('settings')
     .description('Print settings.json hooks block for all installed hooks')
     .action(() => hooksCommand('settings'));
+
+  program
+    .command('update')
+    .description('Update cto to the latest version')
+    .action(updateCommand);
 
   program.parse();
 }
