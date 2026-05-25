@@ -8,7 +8,8 @@ Cut token usage by 90% so Claude can focus on your actual code
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/nadimtuhin/claude-token-optimizer?style=social)](https://github.com/nadimtuhin/claude-token-optimizer/stargazers)
-[![Version](https://img.shields.io/badge/version-2.3.16-blue.svg)](https://github.com/nadimtuhin/claude-token-optimizer/releases)
+[![npm version](https://img.shields.io/npm/v/claude-token-optimizer.svg)](https://www.npmjs.com/package/claude-token-optimizer)
+[![npm downloads](https://img.shields.io/npm/dm/claude-token-optimizer.svg)](https://www.npmjs.com/package/claude-token-optimizer)
 
 </div>
 
@@ -33,12 +34,19 @@ Real result: 11,000 → 1,300 tokens. That's 9,700 tokens freed up for your code
 npx claude-token-optimizer init
 ```
 
-No install needed. Asks 3 questions, creates the optimized structure in ~30 seconds.
+No install needed. Auto-detects your framework, creates the optimized structure in ~30 seconds.
 
 **Measure first** — see your actual token waste before committing:
 
 ```bash
 npx claude-token-optimizer measure
+```
+
+Or install globally for the short `cto` alias:
+
+```bash
+npm install -g claude-token-optimizer
+cto init
 ```
 
 ### What You Get
@@ -110,7 +118,7 @@ Each includes the top 5 critical mistakes for that framework (N+1 queries, auth 
 
 ### Framework-aware setup
 
-`cto init` auto-detects your framework from `package.json`, `requirements.txt`, `go.mod`, `composer.json`, or `Gemfile` — no flag needed for most projects.
+`cto init` auto-detects your framework from `package.json`, `requirements.txt`, `go.mod`, `composer.json`, `pom.xml`, or `Gemfile` — no flag needed for most projects. The detected framework is written into `CLAUDE.md`'s Tech Stack line automatically.
 
 Pass `--framework` to override:
 
@@ -288,13 +296,13 @@ Your mileage will vary, but 83-87% reduction is typical across frameworks.
 ## FAQ
 
 **Is `cto init` safe?**
-It only creates files, never deletes anything. Use `--dry-run` on `compress` and `prune` to preview changes before writing.
+Yes. If `CLAUDE.md` already exists, `cto init` appends only missing sections — it never overwrites your content. Use `--force` to replace completely. Support files like `COMMON_MISTAKES.md` are never overwritten on re-run. Use `--dry-run` on `compress` and `prune` to preview changes before writing.
 
 **Works with my framework?**
 Yes. Works with any language/framework. Auto-detects from `package.json`, `requirements.txt`, `go.mod`, `composer.json`, or `Gemfile`. Specific patterns for 13 frameworks, but it's not required.
 
-**What if I have existing docs?**
-The setup works alongside them. You can migrate gradually or keep both.
+**What if I have an existing `CLAUDE.md`?**
+`cto init` detects it and appends only what's missing (e.g. the Session Start Protocol section). Your existing content is preserved. Run it safely on any project that already has a `CLAUDE.md`.
 
 **Can I customize it?**
 Everything. Edit files, change structure, adjust what loads. It's just markdown files and a `.claudeignore`.
