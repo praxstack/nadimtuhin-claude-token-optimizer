@@ -35,7 +35,7 @@ if ! command -v npm &>/dev/null; then
 fi
 
 info "Installing claude-token-optimizer globally..."
-npm install -g claude-token-optimizer
+npm install -g claude-token-optimizer </dev/null
 
 echo ""
 ok "Installed! Run:"
