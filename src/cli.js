@@ -1,4 +1,5 @@
 import { Command } from 'commander';
+import { createRequire } from 'node:module';
 import { initCommand } from './commands/init.js';
 import { measureCommand } from './commands/measure.js';
 import { hooksCommand } from './commands/hooks.js';
@@ -8,13 +9,15 @@ import { pruneCommand } from './commands/prune.js';
 import { watchCommand } from './commands/watch.js';
 import { diffCommand } from './commands/diff.js';
 
+const { version } = createRequire(import.meta.url)('../package.json');
+
 export function run() {
   const program = new Command();
 
   program
     .name('cto')
     .description('Claude Token Optimizer — cut Claude Code context usage by 90%')
-    .version('2.3.16');
+    .version(version);
 
   program
     .command('init')
