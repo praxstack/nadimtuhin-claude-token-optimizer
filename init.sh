@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# DEPRECATED: Use the npm CLI instead:
+#   npx claude-token-optimizer init
+# This bash script is kept for legacy compatibility but is no longer maintained.
+
 # Claude Token Optimizer - Project Initialization Script
 # This script sets up the optimized documentation structure in your project
 
@@ -13,6 +17,9 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Header
+echo ""
+echo -e "${YELLOW}⚠️  DEPRECATED: This bash script is no longer maintained.${NC}"
+echo -e "${YELLOW}   Use the npm CLI instead: npx claude-token-optimizer init${NC}"
 echo ""
 echo "╔════════════════════════════════════════════════╗"
 echo "║   Claude Token Optimizer - Project Setup      ║"

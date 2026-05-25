@@ -1,6 +1,6 @@
 {
   "name": "claude-token-optimizer",
-  "version": "2.0.0",
+  "version": "2.3.16",
   "description": "Cut Claude Code token usage by 90% — real token counts, optimized project setup",
   "bin": {
     "cto": "bin/cto.js"
@@ -25,6 +25,10 @@
   },
   "keywords": ["claude", "claude-code", "token", "optimizer", "ai", "context"],
   "license": "MIT",
+  "homepage": "https://github.com/nadimtuhin/claude-token-optimizer#readme",
+  "bugs": {
+    "url": "https://github.com/nadimtuhin/claude-token-optimizer/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/nadimtuhin/claude-token-optimizer"

@@ -1,5 +1,7 @@
 #!/bin/bash
 # session-end-token-report.sh
+# EVENT: PostToolUse
+# DESCRIPTION: Append session token estimate to .claude/sessions/token-log.md
 #
 # Opt-in Claude Code session-end hook.
 # Appends a token usage estimate to .claude/sessions/token-log.md

@@ -19,19 +19,12 @@ Found a bug or have a suggestion?
 
 ### Adding Framework Examples
 
-We welcome framework-specific examples! Currently we have Express.js and Next.js. More needed:
+We welcome framework-specific examples! Currently we have 13 frameworks: Express.js, Next.js, Vue.js, Nuxt.js, Angular, Django, Rails, NestJS, Laravel, FastAPI/Flask, Go, Spring Boot, Svelte.
 
-**Wanted:**
-- Vue.js
-- Angular
-- NestJS
-- Django
-- Flask
-- FastAPI
-- Ruby on Rails
-- Laravel
-- Spring Boot
-- And more!
+**Still wanted:**
+- Rust (Actix / Axum)
+- Phoenix (Elixir)
+- ASP.NET Core
 
 **How to add:**
 
@@ -90,6 +83,17 @@ We welcome framework-specific examples! Currently we have Express.js and Next.js
 - Improve clarity
 - Add troubleshooting tips
 
+### CLI Development
+
+If you're modifying CLI code (anything in `src/`):
+
+```bash
+npm install          # install dependencies
+npm test             # run the full suite (163 tests, 24 suites)
+```
+
+All existing tests must pass. Add tests for new behavior in `tests/`.
+
 ### Testing Changes
 
 Before submitting:
@@ -99,6 +103,7 @@ Before submitting:
 3. Check all cross-references work
 4. Validate .claudeignore prevents auto-loading
 5. Ensure completion docs system works
+6. Run `npm test` if you changed any CLI code
 
 ---
 

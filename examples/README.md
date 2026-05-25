@@ -149,6 +149,66 @@ Framework-specific setup examples with common patterns, mistakes, and best pract
 
 ---
 
+### [FastAPI / Flask](fastapi.md)
+
+**For**: Python web APIs with FastAPI or Flask
+
+**Includes**:
+- FastAPI routing and dependency injection
+- Pydantic v2 models and validators
+- Async SQLAlchemy patterns
+- pytest fixtures and database cleanup
+- Common mistakes to avoid
+
+**Use when building**: Python REST APIs, async web services, data APIs
+
+---
+
+### [Go (Gin/chi)](go.md)
+
+**For**: Go web services
+
+**Includes**:
+- Router setup and middleware chains
+- Handler patterns and error handling
+- Context and request lifecycle
+- Testing with testify
+- Common mistakes to avoid
+
+**Use when building**: Go APIs, microservices, high-performance backends
+
+---
+
+### [Spring Boot](spring-boot.md)
+
+**For**: Java REST APIs with Spring Boot
+
+**Includes**:
+- Controller, service, and repository layers
+- JPA and database patterns
+- Spring Security basics
+- Testing with JUnit and Mockito
+- Common mistakes to avoid
+
+**Use when building**: Java microservices, enterprise REST APIs, Spring applications
+
+---
+
+### [Svelte / SvelteKit](svelte.md)
+
+**For**: Svelte applications with SvelteKit
+
+**Includes**:
+- SvelteKit routing and load functions
+- Reactive stores and state management
+- Form actions and progressive enhancement
+- SSR and CSR patterns
+- Common mistakes to avoid
+
+**Use when building**: Full-stack Svelte apps, static sites, modern web applications
+
+---
+
 ## How to Use
 
 1. **Start with Universal Setup**
@@ -172,11 +232,9 @@ Framework-specific setup examples with common patterns, mistakes, and best pract
 Want to add a framework? See `CONTRIBUTING.md`
 
 **Needed examples:**
-- Flask / FastAPI
-- Spring Boot
-- Go (Gin / Echo)
 - Rust (Actix / Axum)
-- And more!
+- Phoenix (Elixir)
+- ASP.NET Core
 
 ---
 
@@ -193,7 +251,11 @@ Want to add a framework? See `CONTRIBUTING.md`
 | Rails | ~10,000 | ~1,700 | 83% |
 | NestJS | ~11,500 | ~1,900 | 83% |
 | Laravel | ~10,500 | ~1,800 | 83% |
+| FastAPI / Flask | ~9,000 | ~1,500 | 83% |
+| Go | ~8,500 | ~1,400 | 84% |
+| Spring Boot | ~10,000 | ~1,700 | 83% |
+| Svelte / SvelteKit | ~8,500 | ~1,400 | 84% |
 
 ---
 
-**Last Updated**: 2025-11-11
+**Last Updated**: 2026-05-20
