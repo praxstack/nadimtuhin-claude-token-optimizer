@@ -24,3 +24,7 @@ docs/INDEX.md
 .woterclip/
 .antigravitycli/
 *.tgz
+.env
+.DS_Store
+dist
+build
